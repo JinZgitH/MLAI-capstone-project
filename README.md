@@ -1,11 +1,15 @@
 ## Airbnb Price Optimizer
 
 **Jin Zheng**
+
 **2025 UC Berkeley MLAI Program Capstone Project**
+
+**(Module 20) Initial Report: Exploratory Data Analysis**: [jin_airbnb_pricing.ipynb](jin_airbnb_pricing.ipynb)
 
 ### Data Source
 
 I found data from Kaggle at https://www.kaggle.com/datasets/rupindersinghrana/airbnb-price-dataset/data
+
 * Name: Airbnb Price Dataset
 * Source: Scraped or aggregated from Airbnb listings across major U.S. cities
 * Total Rows: ~50,000+ entries
