@@ -8,42 +8,49 @@
 
 ### Data Source
 
-I found data from Kaggle at https://www.kaggle.com/datasets/rupindersinghrana/airbnb-price-dataset/data
+The dataset was obtained from Kaggle: [Airbnb Price Dataset](https://www.kaggle.com/datasets/rupindersinghrana/airbnb-price-dataset/data)
 
-* Name: Airbnb Price Dataset
-* Source: Scraped or aggregated from Airbnb listings across major U.S. cities
-* Total Rows: ~50,000+ entries
-* Purpose: Enable modeling and analysis of nightly Airbnb prices using property features
+* **Name**: Airbnb Price Dataset
+* **Source**: Scraped or aggregated from Airbnb listings across major U.S. cities
+* **Total Rows**: ~74,000+ entries
+* **Purpose**: Enable modeling and analysis of nightly Airbnb prices using property features
 
-### Exploratory Data Analysis (EDA) 
+### Exploratory Data Analysis (EDA)
 
-1. Data obeservation by grouping the data by city. I narrow down the data to only NYC and LA
-2. verify the correlation between some of the main features to the log-price and make sure the dataset is useable for our project model training
-3. basic cleaning to remove duplicated and nan values
-4. remove unneeded columns for fast processing
-5. closer observation by looking at price_vs_accommodates, price_by_room_type, property_type_count, top_20_zipcodes_by_city
-6. break down amenities and compare their correlation with the log_price
-7. there were 119 distinct amenities and I would like to keep the top features for modeling to avoid overfitting, reduce dimensionality, and improve interpretability.
-    * remove standard amenities
-    * remove rare amenities
-    * Rank Amenities by Correlation with Price
-    * keep the top 20 features 
+1. **Data observation by city**: Grouped the data by city and narrowed down the analysis to NYC and LA for focused modeling
+2. **Feature correlation analysis**: Verified correlations between main features and log-price to ensure dataset suitability for model training
+3. **Data cleaning**: Removed duplicate entries and null values
+4. **Feature selection**: Removed unnecessary columns for faster processing
+5. **Detailed analysis**: Examined price vs. accommodates, price by room type, property type distribution, and top 20 zipcodes by city
+6. **Amenities breakdown**: Analyzed amenities and their correlation with log-price
+7. **Amenities feature engineering**: From 119 distinct amenities, selected top features for modeling to avoid overfitting, reduce dimensionality, and improve interpretability
+    * Removed standard amenities (common across most listings)
+    * Removed rare amenities (low frequency)
+    * Ranked amenities by correlation with price
+    * Kept the top 20 most predictive features
 
-### Train a baseline model to use as a comparison
+### Baseline Model Training
 
-use a simple yet effective regression algorithm to predict log_price based on available features. 
+Implemented a simple yet effective regression algorithm to predict log-price based on available features.
 
-* Baseline Model: Random Forest
-* MAE:  0.2900
-* RMSE: 0.3994
-* R²:   0.6666
+* **Baseline Model**: Random Forest
+* **MAE**: 0.2900
+* **RMSE**: 0.3994
+* **R²**: 0.6666
 
-#### First iteration: 
-MAE 0.29: On average, the predicted log-prices are off by 0.29 units. Since Im using log_price, this translates to a ~34% average relative error in raw price (exp(0.29) ≈ 1.34).
-RMSE 0.3994: Slightly higher than MAE, indicating some larger errors/outliers in prediction. RMSE penalizes those more heavily.
-The model explains ~66.7% of the variance in log_price. This is a solid baseline, suggesting that the input features (property details, location, top amenities) have meaningful predictive power.
+#### First Iteration Results
+
+**MAE 0.29**: On average, the predicted log-prices are off by 0.29 units. Since we're using log-price, this translates to a ~34% average relative error in raw price (exp(0.29) ≈ 1.34).
+
+**RMSE 0.3994**: Slightly higher than MAE, indicating some larger errors/outliers in prediction. RMSE penalizes these more heavily.
+
+**R² 0.6666**: The model explains ~66.7% of the variance in log-price. This is a solid baseline, suggesting that the input features (property details, location, top amenities) have meaningful predictive power.
+
 The error range is acceptable, especially given that the prediction target is log-transformed, making interpretation robust to outliers.
 
-#### Room for imprvements
-Adding more predictive features (e.g., reviews, seasonal effects, event calendars)
-Trying other models 
+#### Areas for Improvement
+
+* Adding more predictive features (e.g., reviews, seasonal effects, event calendars)
+* Experimenting with other model architectures
+* Feature engineering and selection optimization
+* Hyperparameter tuning 
