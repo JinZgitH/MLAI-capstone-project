@@ -1,10 +1,12 @@
-## Airbnb Price Optimizer
+# Airbnb Price Optimizer
 
 **Jin Zheng**
 
 **2025 UC Berkeley MLAI Program Capstone Project**
 
 **(Module 20) Initial Report: Exploratory Data Analysis**: [jin_airbnb_pricing.ipynb](jin_airbnb_pricing.ipynb)
+
+**(Module 24) Final Report**: [Final Report/README.md](Final%20Report/README.md)
 
 ### Data Source
 
