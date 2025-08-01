@@ -1,86 +1,178 @@
 # Airbnb Price Optimizer
 
+**Jin Zheng**  
+**2025 UC Berkeley MLAI Program Capstone Project**
 
+## Table of Contents
+- [Executive Summary](#executive-summary)
+- [Rationale](#rationale)
+- [Research Question](#research-question)
+- [Data Sources](#data-sources)
+- [Methodology](#methodology)
+- [Results](#results)
+- [Project Files](#project-files)
+- [Conclusion](#conclusion)
 
-## Executive summary
+---
 
-Develop a machine learning model that predicts the nightly price of Airbnb listings in selected cities, with the goal of helping hosts maximize revenue while balancing occupancy rates.
+## Executive Summary
+
+This project explores **dynamic price prediction** for Airbnb properties using structured listing data from **New York City** and **Los Angeles**. The objective is to recommend optimal nightly prices based on property features, location, and amenities — balancing revenue potential with occupancy rates.
+
+**Key Achievement**: Developed multiple machine learning models achieving **R² scores up to 0.71**, providing hosts with data-driven pricing recommendations.
+
+---
 
 ## Rationale
-In the competitive short-term rental market, pricing decisions have a direct impact on host revenue, occupancy rates, and guest satisfaction. Unlike traditional hotels, Airbnb listings vary widely in amenities, property types, and booking flexibility — making manual or static pricing strategies suboptimal.
 
-This project addresses that gap by building a data-driven dynamic pricing model to assist Airbnb hosts in setting optimal nightly prices based on property attributes, amenities, location, and market demand patterns.
+In the competitive short-term rental market, pricing decisions directly impact:
+* **Host revenue** and profitability
+* **Occupancy rates** and booking frequency  
+* **Guest satisfaction** and review scores
+
+Unlike traditional hotels, Airbnb listings vary widely in:
+* **Amenities** and property types
+* **Booking flexibility** and cancellation policies
+* **Location-specific** market dynamics
+
+This project addresses these challenges by building a **data-driven dynamic pricing model** that assists Airbnb hosts in setting optimal nightly prices based on:
+* Property attributes and features
+* Location and neighborhood factors
+* Market demand patterns
+
+---
 
 ## Research Question
-How can we accurately predict the nightly price of an Airbnb property based on its characteristics, amenities, and location — in order to optimize host revenue while maintaining competitive occupancy rates?
+
+**How can we accurately predict the nightly price of an Airbnb property based on its characteristics, amenities, and location to optimize host revenue while maintaining competitive occupancy rates?**
+
+---
 
 ## Data Sources
-Primary Dataset
-Source: Kaggle – [Airbnb Price Dataset](https://www.kaggle.com/datasets/rupindersinghrana/airbnb-price-dataset/data)
 
-Description: A structured dataset containing over 70,000 Airbnb listings from major U.S. cities.
+### Primary Dataset
+* **Source**: [Kaggle Airbnb Price Dataset](https://www.kaggle.com/datasets/rupindersinghrana/airbnb-price-dataset/data)
+* **Size**: Over 70,000 Airbnb listings from major U.S. cities
+* **Focus**: NYC and LA markets (≈53,000 records after filtering)
 
-Fields Used:
-* price, log_price – nightly listing prices (raw and log-transformed)
-* property_type, room_type, city, zipcode
-* accommodates, bathrooms, bedrooms, beds
-* instant_bookable – binary flag
-* amenities – Top 20 Amenities: Extracted using correlation analysis between amenities and log_price
+### Data Understanding
+
+**Initial Analysis Revealed**:
+* **Log price** (target variable) is moderately skewed and benefits from log transformation
+* **Pricing factors** include accommodates, bedrooms, room type, and zip code
+* **Amenities analysis**: Decomposed 119 binary features, selected top 20 most relevant
+* **Feature cleaning**: Removed common amenities (e.g., "Wireless Internet", "Air conditioning") appearing in >95% of listings
+
+### Key Fields Used
+* **Pricing**: `price`, `log_price` (raw and log-transformed nightly prices)
+* **Property**: `property_type`, `room_type`, `accommodates`, `bathrooms`, `bedrooms`, `beds`
+* **Location**: `city`, `zipcode`
+* **Features**: Top 20 amenities (extracted via correlation analysis with log_price)
+
+---
 
 ## Methodology
-1. Data Cleaning and Preprocessing
-2. Exploratory Data Analysis (EDA)
-3. Model Development
-    * Multiple Regression Models
-    * Cross-Validation
-    * Hyperparameter Tuning (Grid Search)
-4. Model Evaluation
+
+1. **Data Cleaning and Preprocessing**
+   * Remove duplicates and null values
+   * Feature engineering and selection
+   * Data type conversions and standardization
+
+2. **Exploratory Data Analysis (EDA)**
+   * Statistical analysis and visualization
+   * Correlation analysis between features and target
+   * Data quality assessment
+
+3. **Model Development**
+   * **Multiple Regression Models**: Linear, Ridge, Lasso, Random Forest, XGBoost, SVR
+   * **Cross-Validation**: 5-fold cross-validation for robust evaluation
+   * **Hyperparameter Tuning**: Grid search optimization
+
+4. **Model Evaluation**
+   * Performance metrics: MAE, RMSE, R²
+   * Model comparison and selection
+   * Ensemble methods (Stacking)
+
+---
 
 ## Results
-Model Comparison Summary
-| Model                | MAE        | RMSE       | R²         | Notes                                                         |
-| -------------------- | ---------- | ---------- | ---------- | ------------------------------------------------------------- |
-| **Random Forest**    | 0.2900     | 0.3994     | 0.6666     | a simple yet effective regression                             |
-| **LinearRegression** | 0.2803     | 0.3842     | 0.6914     | Simple, interpretable baseline                                |
-| **Ridge**            | 0.2799     | 0.3833     | 0.6929     | Slight improvement over linear with regularization            |
-| **Lasso**            | 0.3094     | 0.4179     | 0.6350     | Underperformed — likely over-regularized                      |
-| **XGBoost**          | 0.2765     | 0.3780     | 0.7014     | Strong, non-linear, well-tuned ensemble                       |
-| **SVR**              | **0.2666** | **0.3709** | **0.7125** | ⭐ Best performer overall — captures non-linearity effectively |
-|**XGBoost + Ridge**   | 0.2728     | 0.3736     | 0.7082     | ✅ Strong ensemble; robust and consistent                     |
 
-### Key Takeaways
-1️⃣ SVR outperformed all other models across MAE, RMSE, and R², suggesting it's best at capturing complex pricing relationships — likely due to the RBF kernel's flexibility. 🚫 However, SVR doesn't scale well with 50k+ rows — For my dataset, it took **600+ mins** to complete the training...
+### Model Comparison Summary
 
-2️⃣ XGBoost + Ridge Stacking Regressor strikes an excellent balance between:
-    * Accuracy: second-best RMSE and R² overall
-    * Robustness: combines linear and non-linear patterns
-    * Production readiness: more scalable than SVR for large-scale usage
+| Model | MAE | RMSE | R² | Performance Notes |
+|-------|-----|------|----|-------------------|
+| **Random Forest** | 0.2900 | 0.3994 | 0.6666 | Simple yet effective baseline |
+| **Linear Regression** | 0.2803 | 0.3842 | 0.6914 | Simple, interpretable baseline |
+| **Ridge** | 0.2799 | 0.3833 | 0.6929 | Slight improvement with regularization |
+| **Lasso** | 0.3094 | 0.4179 | 0.6350 | Underperformed — likely over-regularized |
+| **XGBoost** | 0.2765 | 0.3780 | 0.7014 | Strong non-linear ensemble |
+| **SVR** | **0.2666** | **0.3709** | **0.7125** | ⭐ **Best overall performer** |
+| **XGBoost + Ridge** | 0.2728 | 0.3736 | 0.7082 | ✅ **Strong ensemble** |
 
-3️⃣ XGBoost was a close second and may be preferred for larger datasets due to SVR’s scalability limits.
+### Key Findings
 
-4️⃣ Lasso underperforms consistently, possibly due to excessive feature shrinkage.
+**1️⃣ SVR (Support Vector Regression)**
+* **Best performer** across all metrics (MAE, RMSE, R²)
+* **Captures complex non-linear relationships** effectively
+* **Limitation**: Poor scalability (`600+ minutes` for 50k+ rows)
 
-5️⃣ Linear and Ridge models perform reasonably but lag behind ensemble and kernel-based methods.
+**2️⃣ XGBoost + Ridge Stacking Regressor**
+* **Excellent balance** of accuracy and scalability
+* **Second-best performance** overall
+* **Production-ready** for large-scale deployment
 
-### ✅ Recommendation
+**3️⃣ XGBoost**
+* **Close second** to SVR in performance
+* **Preferred choice** for larger datasets
+* **Good scalability** and feature importance analysis
 
-Use `SVR` for small-to-medium batch predictions or if interpretability isn't a top concern.
-Use `XGBoost + Ridge` for production scaling, feature importance analysis, and retraining on larger sets.
+**4️⃣ Linear Models (Linear, Ridge)**
+* **Reasonable performance** but lag behind ensemble methods
+* **High interpretability** for business stakeholders
 
-## Outline of project
+**5️⃣ Lasso**
+* **Consistently underperformed**
+* **Likely over-regularized** for this dataset
 
-- [Initial Report README.md](../README.md)
-- Initial Report: Exploratory Data Analysis: [jin_airbnb_pricing.ipynb](jin_airbnb_pricing.ipynb)
-- Final Models developing [final.ipynb](final.ipynb)
+### Recommendations
 
-#### Summary of Initial Analysis
+**For Small-to-Medium Datasets**:
+* Use **SVR** for maximum accuracy
+* Accept longer training times for best results
+
+**For Production Deployment**:
+* Use **XGBoost + Ridge** ensemble
+* Provides excellent accuracy with good scalability
+* Enables feature importance analysis
+
+---
+
+## Project Files
+
+* **[Initial Report README.md](../README.md)** - Project overview and initial analysis
+* **[Exploratory Data Analysis](jin_airbnb_pricing.ipynb)** - Initial data exploration and baseline model
+* **[Final Model Development](final.ipynb)** - Advanced model development and comparison
+
+### Summary of Initial Analysis
 
 **Dataset**: Kaggle Airbnb Price Dataset (~74,000 listings from NYC and LA)
 
 **Key Work**: 
-- Data cleaning and feature engineering (selected top 20 amenities from 119 total)
-- City-focused analysis (NYC: 32K, LA: 22K listings)
-- Baseline Random Forest model (R²: 0.67, MAE: 0.29)
+* Data cleaning and feature engineering (selected top 20 amenities from 119 total)
+* City-focused analysis (NYC: 32K, LA: 22K listings)
+* Baseline Random Forest model (R²: 0.67, MAE: 0.29)
 
-**Outcome**: Established foundation for final model optimization. 
+**Outcome**: Established foundation for final model optimization.
 
+---
+
+## Conclusion
+
+This project successfully demonstrates that **machine learning models can effectively predict Airbnb nightly prices** using structured property and location data. The developed models — especially **SVR** and **XGBoost + Ridge ensemble** — provide strong baselines for future enhancements.
+
+### Future Enhancements
+
+* **Time-series modeling** for date-aware pricing
+* **External data integration** (seasonality, local events, reviews)
+* **API deployment** for real-time price recommendations
+* **A/B testing framework** for model validation
